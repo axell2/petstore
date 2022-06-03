@@ -1,0 +1,26 @@
+version: "3"
+volumes:
+  postgresql_pet_store_api:
+  bundle_path_pet_store_api:
+services:
+  db_pet_store:
+    restart: on-failure:3
+    image: postgres:13.2
+    volumes:
+      - postgresql_pet_store_api:/var/lib/postgresql/data
+    ports:
+      - 5434:5434
+    env_file:
+      - enviroments/.env.postgresql
+  pet_store_api:
+    restart: on-failure:3
+    build:
+      context: ./pet_store_api
+      dockerfile: Dockerfile
+    ports:
+      - 3000:3000
+    volumes:
+      - ./pet_store_api/:/home/developer/app
+      - bundle_path_pet_store_api:/usr/local/bundle
+    env_file:
+      - enviroments/.env.pet_store_api
